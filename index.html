@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,9 +27,9 @@
             width: 100%;
             height: 100vh;
             background: radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
-                        linear-gradient(135deg, #0a0a0a 0%, #111827 100%);
+                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #111827 100%);
             z-index: -2;
         }
 
@@ -38,7 +39,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
@@ -47,8 +48,15 @@
         }
 
         @keyframes gridPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .container {
@@ -134,8 +142,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .hero-title {
@@ -152,8 +167,13 @@
         }
 
         @keyframes titleGlow {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.1); }
+            0% {
+                filter: brightness(1);
+            }
+
+            100% {
+                filter: brightness(1.1);
+            }
         }
 
         .hero-subtitle {
@@ -239,7 +259,7 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(2, 350px);
             gap: 2rem;
             margin-top: 6rem;
             margin-bottom: 4rem;
@@ -293,8 +313,15 @@
         }
 
         @keyframes iconPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .feature-title {
@@ -396,12 +423,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 1;
             }
+
             90% {
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
@@ -412,21 +442,42 @@
             .nav-links {
                 display: none;
             }
-            
+
             .email-form {
                 flex-direction: column;
             }
-            
+
             .countdown {
                 gap: 1rem;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Add this to your <style> section */
+        .coming-soon-tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(34, 197, 94, 0.95);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            box-shadow: 0 4px 24px rgba(34, 197, 94, 0.18);
+            z-index: 9999;
+            opacity: 0;
+            left: 0;
+            top: 0;
+            transform: scale(0.96) translateY(8px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
     </style>
 </head>
+
 <body>
     <div class="background"></div>
     <div class="grid-overlay"></div>
@@ -437,24 +488,24 @@
             <div class="logo">SuboptiML</div>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a class="coming-soon">Features</a></li>
+                    <li><a class="coming-soon">About</a></li>
+                    <li><a class="coming-soon">Contact</a></li>
                 </ul>
             </nav>
         </header>
 
         <main>
-            <div class="hero-badge">🚀 AI-Powered Innovation</div>
-            
+            <div class="hero-badge">🚀 AI-Powered AutoML</div>
+
             <h1 class="hero-title">SuboptiML</h1>
-            
+
             <p class="hero-subtitle">
-                Revolutionary machine learning solutions that redefine what's possible. 
-                Experience the future of AI optimization with cutting-edge algorithms and seamless integration.
+                Effortless AI engineering. Automated intelligence that empowers you to build, tune, and deploy with zero
+                guesswork — welcome to the age of suboptimal excellence. Coming soon.
             </p>
 
-            <div class="cta-section">
+            <!-- <div class="cta-section">
                 <form class="email-form" id="notifyForm">
                     <input 
                         type="email" 
@@ -484,121 +535,139 @@
                     <span class="countdown-number" id="seconds">00</span>
                     <span class="countdown-label">Seconds</span>
                 </div>
-            </div>
+            </div> -->
 
             <div class="features-grid" id="features">
                 <div class="feature-card">
                     <div class="feature-icon">🧠</div>
-                    <h3 class="feature-title">Advanced Neural Networks</h3>
+                    <h3 class="feature-title">Autopilot Model Building</h3>
                     <p class="feature-description">
-                        State-of-the-art deep learning architectures optimized for maximum performance and efficiency.
+                        LLM-driven logic decides what you see and when — guiding you from raw data to ready models with
+                        a smart, adaptive interface.
                     </p>
                 </div>
+
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3 class="feature-title">Lightning Fast Processing</h3>
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Zero-Touch Data Wrangling</h3>
                     <p class="feature-description">
-                        Accelerated computation with GPU optimization and distributed processing capabilities.
+                        Auto-cleans, transforms, and encodes your data — no manual preprocessing, no headaches.
                     </p>
                 </div>
+
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3 class="feature-title">Enterprise Security</h3>
+                    <div class="feature-icon">🎛️</div>
+                    <h3 class="feature-title">Hyperparameter Alchemy</h3>
                     <p class="feature-description">
-                        Military-grade encryption and privacy-first architecture for sensitive data protection.
+                        Automatically explores the best parameters using built-in heuristics and LLM feedback.
                     </p>
                 </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Train Anything, Anywhere</h3>
+                    <p class="feature-description">
+                        Fine-tune open models or build from scratch — SuboptiML guides your training.
+                    </p>
+                </div>
+
             </div>
         </main>
 
         <footer>
             <div class="social-links">
-                <a href="#" class="social-link">📧</a>
-                <a href="#" class="social-link">🐦</a>
-                <a href="#" class="social-link">💼</a>
-                <a href="#" class="social-link">🔗</a>
+                <!-- <a class="social-link coming-soon">📧</a>
+                <a class="social-link coming-soon">🐦</a>
+                <a class="social-link coming-soon">💼</a>
+                <a class="social-link coming-soon">🔗</a> -->
+                <a class="social-link coming-soon" target="_blank" aria-label="GitHub">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.566 4.944.36.31.68.923.68 1.861 0 1.343-.012 2.426-.012 2.756 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z" />
+                    </svg>
+                </a>
             </div>
             <p style="color: rgba(255, 255, 255, 0.5);">
-                © 2025 SuboptiML. All rights reserved.
+                2025 SuboptiML. No rights reserved.
             </p>
         </footer>
     </div>
 
     <script>
         // Countdown Timer
-        function initCountdown() {
-            const launchDate = new Date('2025-08-01T00:00:00').getTime();
-            
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = launchDate - now;
-                
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-                
-                if (distance < 0) {
-                    document.getElementById('countdown').innerHTML = '<div class="countdown-item"><span class="countdown-number">🎉</span><span class="countdown-label">Launched!</span></div>';
-                }
-            }
-            
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
-        }
+        // function initCountdown() {
+        //     const launchDate = new Date('2025-08-01T00:00:00').getTime();
 
-        // Email Form Handler
-        function initEmailForm() {
-            const form = document.getElementById('notifyForm');
-            const button = form.querySelector('.notify-btn');
-            const input = document.getElementById('emailInput');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const originalText = button.textContent;
-                button.textContent = 'Added! ✓';
-                button.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = 'linear-gradient(135deg, #22c55e, #10b981)';
-                    input.value = '';
-                }, 2000);
-            });
-        }
+        //     function updateCountdown() {
+        //         const now = new Date().getTime();
+        //         const distance = launchDate - now;
+
+        //         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        //         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        //         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        //         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        //         document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        //         document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        //         document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        //         document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+        //         if (distance < 0) {
+        //             document.getElementById('countdown').innerHTML = '<div class="countdown-item"><span class="countdown-number">🎉</span><span class="countdown-label">Launched!</span></div>';
+        //         }
+        //     }
+
+        //     updateCountdown();
+        //     setInterval(updateCountdown, 1000);
+        // }
+
+        // // Email Form Handler
+        // function initEmailForm() {
+        //     const form = document.getElementById('notifyForm');
+        //     const button = form.querySelector('.notify-btn');
+        //     const input = document.getElementById('emailInput');
+
+        //     form.addEventListener('submit', function (e) {
+        //         e.preventDefault();
+
+        //         const originalText = button.textContent;
+        //         button.textContent = 'Added! ✓';
+        //         button.style.background = 'linear-gradient(135deg, #059669, #047857)';
+
+        //         setTimeout(() => {
+        //             button.textContent = originalText;
+        //             button.style.background = 'linear-gradient(135deg, #22c55e, #10b981)';
+        //             input.value = '';
+        //         }, 2000);
+        //     });
+        // }
 
         // Floating Elements Animation
         function createFloatingElements() {
             const container = document.querySelector('.floating-elements');
-            
+
             function createCircle() {
                 const circle = document.createElement('div');
                 circle.className = 'floating-circle';
-                
+
                 const size = Math.random() * 60 + 20;
                 const leftPosition = Math.random() * 100;
                 const animationDuration = Math.random() * 10 + 15;
-                
+
                 circle.style.width = size + 'px';
                 circle.style.height = size + 'px';
                 circle.style.left = leftPosition + '%';
                 circle.style.animationDuration = animationDuration + 's';
-                
+
                 container.appendChild(circle);
-                
+
                 setTimeout(() => {
                     if (circle.parentNode) {
                         circle.parentNode.removeChild(circle);
                     }
                 }, animationDuration * 1000);
             }
-            
+
             setInterval(createCircle, 3000);
         }
 
@@ -625,13 +694,13 @@
         }
 
         // Initialize all functions
-        document.addEventListener('DOMContentLoaded', function() {
-            initCountdown();
-            initEmailForm();
+        document.addEventListener('DOMContentLoaded', function () {
+            // initCountdown();
+            // initEmailForm();
             createFloatingElements();
             initSmoothScroll();
-            initParallax();
-            
+            // initParallax();
+
             // Add loading animation
             document.body.style.opacity = '0';
             setTimeout(() => {
@@ -641,19 +710,47 @@
         });
 
         // Feature cards hover effect
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.feature-card');
-            
+
             cards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
+                card.addEventListener('mouseenter', function () {
                     this.style.transform = 'translateY(-10px) scale(1.02)';
                 });
-                
-                card.addEventListener('mouseleave', function() {
+
+                card.addEventListener('mouseleave', function () {
                     this.style.transform = 'translateY(0) scale(1)';
                 });
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create tooltip element
+            const tooltip = document.createElement('div');
+            tooltip.className = 'coming-soon-tooltip';
+            tooltip.textContent = 'Coming soon';
+            document.body.appendChild(tooltip);
+
+            // Show tooltip on hover
+            document.querySelectorAll('.coming-soon').forEach(el => {
+                el.addEventListener('mouseenter', e => {
+                    tooltip.style.opacity = '1';
+                    tooltip.style.transform = 'scale(1) translateY(0)';
+                    tooltip.style.transition = 'opacity 0.25s, transform 0.25s';
+                });
+                el.addEventListener('mousemove', e => {
+                    tooltip.style.left = (e.clientX + 12) + 'px';
+                    tooltip.style.top = (e.clientY + 16) + 'px';
+                });
+                el.addEventListener('mouseleave', e => {
+                    tooltip.style.opacity = '0';
+                    tooltip.style.transform = 'scale(0.96) translateY(8px)';
+                    tooltip.style.transition = 'opacity 0.25s, transform 0.25s';
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>
