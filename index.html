@@ -456,7 +456,6 @@
             }
         }
 
-        /* Add this to your <style> section */
         .coming-soon-tooltip {
             position: fixed;
             pointer-events: none;
@@ -504,39 +503,8 @@
                 Effortless AI engineering. Automated intelligence that empowers you to build, tune, and deploy with zero
                 guesswork — welcome to the age of suboptimal excellence. Coming soon.
             </p>
-
-            <!-- <div class="cta-section">
-                <form class="email-form" id="notifyForm">
-                    <input 
-                        type="email" 
-                        class="email-input" 
-                        placeholder="Enter your email for early access"
-                        required
-                        id="emailInput"
-                    >
-                    <button type="submit" class="notify-btn">Get Notified</button>
-                </form>
-            </div>
-
-            <div class="countdown" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-number" id="days">00</span>
-                    <span class="countdown-label">Days</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="hours">00</span>
-                    <span class="countdown-label">Hours</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="minutes">00</span>
-                    <span class="countdown-label">Minutes</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="seconds">00</span>
-                    <span class="countdown-label">Seconds</span>
-                </div>
-            </div> -->
-
+            <!-------------TODO------------>
+            <!-- ADD TRY DEMO BUTTON HERE-->
             <div class="features-grid" id="features">
                 <div class="feature-card">
                     <div class="feature-icon">🧠</div>
@@ -594,54 +562,6 @@
     </div>
 
     <script>
-        // Countdown Timer
-        // function initCountdown() {
-        //     const launchDate = new Date('2025-08-01T00:00:00').getTime();
-
-        //     function updateCountdown() {
-        //         const now = new Date().getTime();
-        //         const distance = launchDate - now;
-
-        //         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        //         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        //         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        //         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        //         document.getElementById('days').textContent = days.toString().padStart(2, '0');
-        //         document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        //         document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        //         document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-
-        //         if (distance < 0) {
-        //             document.getElementById('countdown').innerHTML = '<div class="countdown-item"><span class="countdown-number">🎉</span><span class="countdown-label">Launched!</span></div>';
-        //         }
-        //     }
-
-        //     updateCountdown();
-        //     setInterval(updateCountdown, 1000);
-        // }
-
-        // // Email Form Handler
-        // function initEmailForm() {
-        //     const form = document.getElementById('notifyForm');
-        //     const button = form.querySelector('.notify-btn');
-        //     const input = document.getElementById('emailInput');
-
-        //     form.addEventListener('submit', function (e) {
-        //         e.preventDefault();
-
-        //         const originalText = button.textContent;
-        //         button.textContent = 'Added! ✓';
-        //         button.style.background = 'linear-gradient(135deg, #059669, #047857)';
-
-        //         setTimeout(() => {
-        //             button.textContent = originalText;
-        //             button.style.background = 'linear-gradient(135deg, #22c55e, #10b981)';
-        //             input.value = '';
-        //         }, 2000);
-        //     });
-        // }
-
         // Floating Elements Animation
         function createFloatingElements() {
             const container = document.querySelector('.floating-elements');
@@ -687,19 +607,11 @@
             });
         }
 
-        // Parallax Effect (removed to fix background scrolling bug)
-        function initParallax() {
-            // Parallax effect disabled to prevent background movement issues
-            // Background elements are now fixed and won't move during scroll
-        }
 
         // Initialize all functions
         document.addEventListener('DOMContentLoaded', function () {
-            // initCountdown();
-            // initEmailForm();
             createFloatingElements();
             initSmoothScroll();
-            // initParallax();
 
             // Add loading animation
             document.body.style.opacity = '0';
