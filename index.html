@@ -184,45 +184,7 @@
             line-height: 1.6;
         }
 
-        .cta-section {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            align-items: center;
-            margin-bottom: 4rem;
-        }
-
-        .email-form {
-            display: flex;
-            gap: 1rem;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .email-input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: 2px solid rgba(34, 197, 94, 0.3);
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .email-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .email-input:focus {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .notify-btn {
+        .test-btn {
             padding: 1rem 2rem;
             background: linear-gradient(135deg, #22c55e, #10b981);
             color: white;
@@ -237,7 +199,7 @@
             overflow: hidden;
         }
 
-        .notify-btn::before {
+        .test-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -248,11 +210,11 @@
             transition: left 0.5s;
         }
 
-        .notify-btn:hover::before {
+        .test-btn:hover::before {
             left: 100%;
         }
 
-        .notify-btn:hover {
+        .test-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
         }
@@ -334,37 +296,6 @@
         .feature-description {
             color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
-        }
-
-        .countdown {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            margin: 4rem 0;
-        }
-
-        .countdown-item {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 15px;
-            padding: 1.5rem;
-            min-width: 100px;
-            backdrop-filter: blur(10px);
-        }
-
-        .countdown-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #22c55e;
-            display: block;
-        }
-
-        .countdown-label {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         footer {
@@ -503,8 +434,7 @@
                 Effortless AI engineering. Automated intelligence that empowers you to build, tune, and deploy with zero
                 guesswork — welcome to the age of suboptimal excellence. Coming soon.
             </p>
-            <!-------------TODO------------>
-            <!-- ADD TRY DEMO BUTTON HERE-->
+            <button class="test-btn coming-soon">Try Demo</button>
             <div class="features-grid" id="features">
                 <div class="feature-card">
                     <div class="feature-icon">🧠</div>
