@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>SuboptiML - Interactive Demo</title>
-    <!-- Include ApexCharts for modern graphing -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         * {
@@ -94,7 +93,7 @@
         .hero-subtitle {
             font-size: clamp(1.1rem, 2vw, 1.25rem);
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 3rem;
+            margin-bottom: 1.1rem;
             max-width: 650px;
             text-align: center;
             line-height: 1.6;
@@ -123,9 +122,10 @@
             padding: 1rem 1.5rem;
             width: 100%;
             text-align: left;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
         }
-        
+
         #columnsSection {
             text-align: center;
             width: 100%;
@@ -144,7 +144,7 @@
             justify-content: center;
             gap: 0.75rem;
         }
-        
+
         #columnsSection button {
             margin: 0.25rem;
             background: rgba(34, 197, 94, 0.1);
@@ -189,7 +189,7 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
         }
-        
+
         button#btn-main-action:disabled {
             background: #222;
             color: #888;
@@ -197,7 +197,7 @@
             box-shadow: none;
             border: 1px solid #333;
         }
-        
+
         /* Status & Results Styling */
         .status-and-results {
             width: 100%;
@@ -206,64 +206,333 @@
             transform: translateY(20px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .status-and-results.show {
             opacity: 1;
             transform: translateY(0);
         }
-        .step-container { display: flex; justify-content: center; gap: 2rem; margin-bottom: 3rem; }
-        .step { display: flex; align-items: center; font-size: 1.1rem; color: #888; transition: all 0.4s ease; }
-        .step::before { content: '○'; font-size: 1.2rem; margin-right: 0.5rem; color: #444; transition: all 0.4s ease; }
-        .step.running { color: #22c55e; font-weight: 700; }
-        .step.running::before { content: '⚡'; color: #22c55e; animation: runningPulse 1.5s ease-in-out infinite; }
-        .step.done { color: #10b981; }
-        .step.done::before { content: '✨'; color: #10b981; animation: completePulse 0.6s ease-out; }
-        @keyframes runningPulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(180deg); } }
-        @keyframes completePulse { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+
+        .step-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #888;
+            transition: all 0.4s ease;
+        }
+
+        .step::before {
+            content: '○';
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            color: #444;
+            transition: all 0.4s ease;
+        }
+
+        .step.running {
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .step.running::before {
+            content: '⚡';
+            color: #22c55e;
+            animation: runningPulse 1.5s ease-in-out infinite;
+        }
+
+        .step.done {
+            color: #10b981;
+        }
+
+        .step.done::before {
+            content: '✨';
+            color: #10b981;
+            animation: completePulse 0.6s ease-out;
+        }
+
+        @keyframes runningPulse {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(180deg);
+            }
+        }
+
+        @keyframes completePulse {
+            0% {
+                transform: scale(0.8);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
 
         /* Visualization Styles (from visualization.html) */
-        .charts-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
-        .chart-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 20px; backdrop-filter: blur(10px); padding: 1.5rem; }
-        .chart-card h2 { font-size: 1.3rem; margin-bottom: 1.5rem; color: #e5e7eb; border-left: 3px solid #22c55e; padding-left: 1rem; }
-        .span-4 { grid-column: span 4; } .span-6 { grid-column: span 6; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
-        @media (max-width: 1200px) { .span-8, .span-6 { grid-column: span 12; } } @media (max-width: 768px) { .span-4 { grid-column: span 12; } }
-        .metrics-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-        .metric-box { background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 12px; text-align: center; border: 1px solid rgba(34, 197, 94, 0.1); }
-        .metric-value { font-size: 2rem; font-weight: 800; color: #22c55e; }
-        .metric-label { font-size: 0.9rem; color: #9ca3af; margin-top: 0.25rem; text-transform: uppercase; }
-        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(34, 197, 94, 0.2); }
-        .tab-button { padding: 0.5rem 1rem; background: transparent; border: none; border-bottom: 3px solid transparent; color: #9ca3af; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-        .tab-button.active, .tab-button:hover { color: #22c55e; border-bottom-color: #22c55e; }
-        .tab-content { display: none; } .tab-content.active { display: block; }
-        .pdp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
-        .lime-container { display: flex; flex-direction: column; gap: 1.5rem; }
-        .lime-instance { background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.1); }
-        .lime-instance h3 { font-size: 1rem; margin-bottom: 0.5rem; color: #a0aec0; }
-        .lime-explanation { display: flex; justify-content: space-between; font-family: monospace; font-size: 0.9rem; padding: 0.2rem 0; }
-        .lime-explanation .feature { color: #e5e7eb; }
-        .lime-explanation .weight-positive { color: #22c55e; font-weight: bold; }
-        .lime-explanation .weight-negative { color: #ef4444; font-weight: bold; }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            max-width: 100%;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+        }
+
+        .chart-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #e5e7eb;
+            border-left: 3px solid #22c55e;
+            padding-left: 1rem;
+        }
+
+        .span-4 {
+            grid-column: span 4;
+        }
+
+        .span-6 {
+            grid-column: span 6;
+        }
+
+        .span-8 {
+            grid-column: span 8;
+        }
+
+        .span-12 {
+            grid-column: span 12;
+        }
+
+        @media (max-width: 1200px) {
+
+            .span-8,
+            .span-6 {
+                grid-column: span 12;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .span-4 {
+                grid-column: span 12;
+            }
+        }
+
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-box {
+            background: rgba(34, 197, 94, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(34, 197, 94, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #22c55e;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .tab-button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #9ca3af;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active,
+        .tab-button:hover {
+            color: #22c55e;
+            border-bottom-color: #22c55e;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .pdp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lime-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .lime-instance {
+            background: rgba(34, 197, 94, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(34, 197, 94, 0.1);
+        }
+
+        .lime-instance h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #a0aec0;
+        }
+
+        .lime-explanation {
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+            font-size: 0.9rem;
+            padding: 0.2rem 0;
+        }
+
+        .lime-explanation .feature {
+            color: #e5e7eb;
+        }
+
+        .lime-explanation .weight-positive {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .lime-explanation .weight-negative {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .disabled-tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(34, 197, 94, 0.97);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            box-shadow: 0 4px 24px rgba(34, 197, 94, 0.18);
+            z-index: 9999;
+            opacity: 0;
+            left: 0;
+            top: 0;
+            transform: scale(0.96) translateY(8px);
+            transition: opacity 0.22s, transform 0.22s;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="background"></div>
     <div class="grid-overlay"></div>
+    <div class="floating-elements"></div>
     <div class="logo-container">
         <a href="index.html" class="logo">SuboptiML</a>
     </div>
 
     <div class="main-content">
-        <h1>See How It Works</h1>
+        <h1>See It At Work</h1>
         <p class="hero-subtitle">
-            This is an interactive demo of SuboptiML. Click the button below to simulate uploading the famous Iris dataset, watch the automated analysis run, and explore the results — no setup required.
+            Experience <b>SuboptiML</b> in action.<br>
+            Click below to instantly load the classic <a href="https://www.kaggle.com/datasets/uciml/iris" target="_blank" style="color: #fff; text-decoration: underline;"><u>Iris dataset</u></a>, watch the automated analysis unfold, and explore interactive results: no setup or coding required.
         </p>
 
         <!-- Step 1, 2, 3: Controls -->
         <div id="demo-controls" class="demo-controls">
             <!-- Step 1: File Display -->
             <div id="file-display-card">
-                 <strong style="color:#22c55e; font-size:1.08em;">Loaded Dataset:</strong>
-                 <span style="margin-left: 0.5rem;">iris_dataset.csv</span>
+                <strong style="color:#22c55e; font-size:1.08em;">Loaded Dataset:</strong>
+                <span style="margin-left: 0.5rem;">iris_dataset.csv</span>
             </div>
 
             <!-- Step 2: Column Selection -->
@@ -287,7 +556,7 @@
 
             <!-- Results Grid -->
             <div id="resultsContainer" class="charts-grid" style="display: none;">
-                 <!-- Metrics Card -->
+                <!-- Metrics Card -->
                 <div class="chart-card span-12">
                     <h2>Training Metrics</h2>
                     <div id="metricsContainer" class="metrics-container"></div>
@@ -300,9 +569,15 @@
                         <button class="tab-button" onclick="switchTab('weight', this)">Weight</button>
                         <button class="tab-button" onclick="switchTab('cover', this)">Cover</button>
                     </div>
-                    <div id="tab-gain" class="tab-content active"><div id="chart-gain"></div></div>
-                    <div id="tab-weight" class="tab-content"><div id="chart-weight"></div></div>
-                    <div id="tab-cover" class="tab-content"><div id="chart-cover"></div></div>
+                    <div id="tab-gain" class="tab-content active">
+                        <div id="chart-gain"></div>
+                    </div>
+                    <div id="tab-weight" class="tab-content">
+                        <div id="chart-weight"></div>
+                    </div>
+                    <div id="tab-cover" class="tab-content">
+                        <div id="chart-cover"></div>
+                    </div>
                 </div>
                 <!-- Permutation Importance Card -->
                 <div class="chart-card span-4">
@@ -327,7 +602,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // --- PRE-LOADED DEMO DATA ---
         // This simulates the data that would be fetched from the backend.
@@ -348,20 +623,20 @@
                 interpretation: {
                     interpretation_data: {
                         feature_importance: {
-                            gain: [ { feature: "PetalLengthCm", importance: 0.657 }, { feature: "PetalWidthCm", importance: 0.301 }, { feature: "SepalWidthCm", importance: 0.027 }, { feature: "SepalLengthCm", importance: 0.015 } ],
-                            weight: [ { feature: "PetalLengthCm", importance: 25 }, { feature: "PetalWidthCm", importance: 18 }, { feature: "SepalLengthCm", importance: 29 }, { feature: "SepalWidthCm", importance: 21 } ],
-                            cover: [ { feature: "PetalLengthCm", importance: 150.5 }, { feature: "PetalWidthCm", importance: 120.2 }, { feature: "SepalLengthCm", importance: 180.8 }, { feature: "SepalWidthCm", importance: 165.1 } ]
+                            gain: [{ feature: "PetalLengthCm", importance: 0.657 }, { feature: "PetalWidthCm", importance: 0.301 }, { feature: "SepalWidthCm", importance: 0.027 }, { feature: "SepalLengthCm", importance: 0.015 }],
+                            weight: [{ feature: "PetalLengthCm", importance: 25 }, { feature: "PetalWidthCm", importance: 18 }, { feature: "SepalLengthCm", importance: 29 }, { feature: "SepalWidthCm", importance: 21 }],
+                            cover: [{ feature: "PetalLengthCm", importance: 150.5 }, { feature: "PetalWidthCm", importance: 120.2 }, { feature: "SepalLengthCm", importance: 180.8 }, { feature: "SepalWidthCm", importance: 165.1 }]
                         },
-                        permutation_importance: [ { feature: "PetalLengthCm", importance_mean: 0.41 }, { feature: "PetalWidthCm", importance_mean: 0.35 }, { feature: "SepalLengthCm", importance_mean: 0.08 }, { feature: "SepalWidthCm", importance_mean: 0.02 } ],
-                        shap_summary_data: [ { feature: "PetalLengthCm", mean_abs_shap_value: 0.85 }, { feature: "PetalWidthCm", mean_abs_shap_value: 0.72 }, { feature: "SepalLengthCm", mean_abs_shap_value: 0.21 }, { feature: "SepalWidthCm", mean_abs_shap_value: 0.15 } ],
+                        permutation_importance: [{ feature: "PetalLengthCm", importance_mean: 0.41 }, { feature: "PetalWidthCm", importance_mean: 0.35 }, { feature: "SepalLengthCm", importance_mean: 0.08 }, { feature: "SepalWidthCm", importance_mean: 0.02 }],
+                        shap_summary_data: [{ feature: "PetalLengthCm", mean_abs_shap_value: 0.85 }, { feature: "PetalWidthCm", mean_abs_shap_value: 0.72 }, { feature: "SepalLengthCm", mean_abs_shap_value: 0.21 }, { feature: "SepalWidthCm", mean_abs_shap_value: 0.15 }],
                         partial_dependence_data: {
                             "PetalLengthCm": { feature_values: [1.5, 2.5, 3.5, 4.5, 5.5, 6.5], dependence: [-0.8, -0.6, 0.1, 0.7, 0.9, 0.95] },
                             "PetalWidthCm": { feature_values: [0.2, 0.6, 1.0, 1.4, 1.8, 2.2], dependence: [-0.7, -0.5, 0.0, 0.6, 0.85, 0.92] }
                         },
                         lime_explanation_data: {
-                           "1 (Predicted: Setosa)": [ ["PetalLengthCm <= 1.9", 0.45], ["PetalWidthCm <= 0.6", 0.28], ["SepalWidthCm > 3.0", 0.11] ],
-                           "72 (Predicted: Versicolor)": [ ["2.0 < PetalLengthCm <= 4.8", 0.51], ["0.7 < PetalWidthCm <= 1.5", 0.33], ["SepalLengthCm <= 5.8", -0.09] ],
-                           "120 (Predicted: Virginica)": [ ["PetalLengthCm > 4.8", 0.62], ["PetalWidthCm > 1.5", 0.41], ["SepalWidthCm <= 3.0", 0.05] ]
+                            "1 (Predicted: Setosa)": [["PetalLengthCm <= 1.9", 0.45], ["PetalWidthCm <= 0.6", 0.28], ["SepalWidthCm > 3.0", 0.11]],
+                            "72 (Predicted: Versicolor)": [["2.0 < PetalLengthCm <= 4.8", 0.51], ["0.7 < PetalWidthCm <= 1.5", 0.33], ["SepalLengthCm <= 5.8", -0.09]],
+                            "120 (Predicted: Virginica)": [["PetalLengthCm > 4.8", 0.62], ["PetalWidthCm > 1.5", 0.41], ["SepalWidthCm <= 3.0", 0.05]]
                         }
                     }
                 }
@@ -375,7 +650,7 @@
         const mainButton = document.getElementById('btn-main-action');
         const fileDisplay = document.getElementById('file-display-card');
         const columnsSection = document.getElementById('columnsSection');
-        
+
         mainButton.addEventListener('click', handleMainAction);
 
         function updateUI() {
@@ -385,19 +660,29 @@
                     mainButton.disabled = false;
                     fileDisplay.style.display = 'none';
                     columnsSection.style.display = 'none';
+                    fileDisplay.classList.remove('fade-in-up');
+                    columnsSection.classList.remove('fade-in-up');
                     break;
                 case 'file_loaded':
                     mainButton.textContent = 'Start Analysis';
                     mainButton.disabled = true;
                     fileDisplay.style.display = 'block';
                     columnsSection.style.display = 'block';
+                    // Trigger animation
+                    fileDisplay.classList.remove('fade-in-up');
+                    columnsSection.classList.remove('fade-in-up');
+                    // Force reflow to restart animation if needed
+                    void fileDisplay.offsetWidth;
+                    void columnsSection.offsetWidth;
+                    fileDisplay.classList.add('fade-in-up');
+                    columnsSection.classList.add('fade-in-up');
                     break;
                 case 'target_selected':
                     mainButton.disabled = false;
                     break;
             }
         }
-        
+
         function handleMainAction() {
             if (demoState === 'initial') {
                 demoState = 'file_loaded';
@@ -412,10 +697,41 @@
         function showColumns() {
             const wrapper = columnsSection.querySelector('.columns-wrapper');
             wrapper.innerHTML = ''; // Clear previous
+
+            // Tooltip element for disabled buttons
+            let disabledTooltip = document.getElementById('disabled-tooltip');
+            if (!disabledTooltip) {
+                disabledTooltip = document.createElement('div');
+                disabledTooltip.id = 'disabled-tooltip';
+                disabledTooltip.className = 'disabled-tooltip';
+                disabledTooltip.textContent = 'In the demo, only Species works';
+                document.body.appendChild(disabledTooltip);
+            }
+
             DEMO_DATA.columns.forEach(header => {
                 const button = document.createElement('button');
                 button.textContent = header;
+                if (header !== "Species") {
+                    button.disabled = true;
+                    button.style.opacity = "0.5";
+                    button.style.cursor = "not-allowed";
+                    button.addEventListener('mouseenter', e => {
+                        disabledTooltip.style.opacity = '1';
+                        disabledTooltip.style.transform = 'scale(1) translateY(0)';
+                        disabledTooltip.style.left = (e.clientX + 12) + 'px';
+                        disabledTooltip.style.top = (e.clientY + 16) + 'px';
+                    });
+                    button.addEventListener('mousemove', e => {
+                        disabledTooltip.style.left = (e.clientX + 12) + 'px';
+                        disabledTooltip.style.top = (e.clientY + 16) + 'px';
+                    });
+                    button.addEventListener('mouseleave', () => {
+                        disabledTooltip.style.opacity = '0';
+                        disabledTooltip.style.transform = 'scale(0.96) translateY(8px)';
+                    });
+                }
                 button.onclick = () => {
+                    if (button.disabled) return;
                     selectedTarget = header;
                     wrapper.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
                     button.classList.add('selected');
@@ -424,19 +740,26 @@
                 };
                 wrapper.appendChild(button);
             });
+            // If "Species" was pre-selected, enable the main button
+            if (selectedTarget === "Species") {
+                updateUI();
+            }
         }
-        
+
         function startSimulatedAnalysis() {
-            document.getElementById('demo-controls').classList.add('hide');
-            
+            const demoControls = document.getElementById('demo-controls');
+            if (demoControls) {
+                demoControls.parentNode.removeChild(demoControls);
+            }
+
             const statusSection = document.getElementById('status-and-results');
             statusSection.style.display = 'block';
             setTimeout(() => statusSection.classList.add('show'), 100);
 
             const steps = [
-                { id: 'step-data_prep', duration: 1500 },
-                { id: 'step-training', duration: 2000 },
-                { id: 'step-interpretation', duration: 1500 }
+                { id: 'step-data_prep', duration: 1000 },
+                { id: 'step-training', duration: 1200 },
+                { id: 'step-interpretation', duration: 1000 }
             ];
 
             let delay = 0;
@@ -444,7 +767,7 @@
                 setTimeout(() => {
                     document.getElementById(step.id).classList.add('running');
                 }, delay);
-                
+
                 delay += step.duration;
 
                 setTimeout(() => {
@@ -504,9 +827,9 @@
                 options.chart.height = 30 + chartData.length * 40;
                 new ApexCharts(document.querySelector(`#chart-${type}`), options).render();
             };
-            if(data.gain) renderChart('gain', data.gain);
-            if(data.weight) renderChart('weight', data.weight);
-            if(data.cover) renderChart('cover', data.cover);
+            if (data.gain) renderChart('gain', data.gain);
+            if (data.weight) renderChart('weight', data.weight);
+            if (data.cover) renderChart('cover', data.cover);
         }
 
         function switchTab(tabId, element) {
@@ -544,7 +867,7 @@
                     colors: ['#10b981'], stroke: { curve: 'smooth', width: 3 },
                     title: { text: feature, align: 'left', style: { color: '#e5e7eb', fontSize: '16px' } },
                     xaxis: { categories: pdpData.feature_values.map(v => typeof v === 'number' ? v.toFixed(2) : v), labels: { style: { colors: '#a0aec0' } } },
-                    yaxis: { title: { text: 'Prediction Impact', style: { color: '#a0aec0' }}, labels: { style: { colors: '#a0aec0' }} },
+                    yaxis: { title: { text: 'Prediction Impact', style: { color: '#a0aec0' } }, labels: { style: { colors: '#a0aec0' } } },
                     grid: { borderColor: '#ffffff1a', strokeDashArray: 4 }, tooltip: { theme: 'dark' }
                 };
                 new ApexCharts(chartDiv, options).render();
@@ -557,19 +880,59 @@
                 <div class="lime-instance">
                     <h3>Explanation for Sample #${instanceId}</h3>
                     ${explanations.map(exp => {
-                        const [feature, weight] = exp;
-                        const weightClass = weight > 0 ? 'weight-positive' : 'weight-negative';
-                        return `<div class="lime-explanation">
+                const [feature, weight] = exp;
+                const weightClass = weight > 0 ? 'weight-positive' : 'weight-negative';
+                return `<div class="lime-explanation">
                                     <span class="feature">${feature}</span>
                                     <span class="${weightClass}">${weight > 0 ? '+' : ''}${weight.toFixed(2)}</span>
                                 </div>`;
-                    }).join('')}
+            }).join('')}
                 </div>`).join('');
         }
 
         // Initial setup
         updateUI();
 
+        function createFloatingElements() {
+            const container = document.querySelector('.floating-elements');
+
+            function createCircle() {
+                const circle = document.createElement('div');
+                circle.className = 'floating-circle';
+
+                const size = Math.random() * 60 + 20;
+                const leftPosition = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 15;
+
+                circle.style.width = size + 'px';
+                circle.style.height = size + 'px';
+                circle.style.left = leftPosition + '%';
+                circle.style.animationDuration = animationDuration + 's';
+
+                container.appendChild(circle);
+
+                setTimeout(() => {
+                    if (circle.parentNode) {
+                        circle.parentNode.removeChild(circle);
+                    }
+                }, animationDuration * 1000);
+            }
+
+            setInterval(createCircle, 3000);
+        }
+        // Initialize all functions
+        document.addEventListener('DOMContentLoaded', function () {
+            createFloatingElements();
+
+            // Add loading animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease-in-out';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
     </script>
 </body>
+
 </html>
