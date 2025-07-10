@@ -509,6 +509,64 @@
                 opacity: 0;
             }
         }
+
+        #btn-inference {
+    padding: 1rem 2.5rem;
+    background: linear-gradient(135deg, #22c55e, #10b981);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+}
+
+#btn-inference:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
+}
+
+.inference-table-container {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 900px;
+    overflow-x: auto;
+}
+
+#inference-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 2rem; /* Added upper margin to the table */
+}
+
+#inference-table th,
+#inference-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#inference-table th {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+#inference-table tr:last-child td {
+    border-bottom: none;
+}
+
+
+
     </style>
 </head>
 
@@ -543,6 +601,17 @@
 
             <!-- Main Action Button -->
             <button id="btn-main-action">Load Demo Dataset</button>
+        </div>
+        <div id="inference-section" style="text-align: center; margin-top: 3rem; display: none;">
+            <button id="btn-inference" class="inference-btn" style="opacity:0;">Run Inference on New Data</button>
+            <div id="inference-file-display-card" style="display:none; margin-top:2rem; text-align:left; border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 14px; background: rgba(34, 197, 94, 0.06); padding: 1rem 1.5rem; width: 100%; max-width: 900px;">
+                <strong style="color:#22c55e; font-size:1.08em;">Loaded Dataset:</strong>
+                <span style="margin-left: 0.5rem;">iris_inference.csv</span>
+            </div>
+            <div id="inference-table-container" style="display: none; margin-top: 2rem;">
+                <h2>Inference Results</h2>
+                <table id="inference-table" class="inference-table"></table>
+            </div>
         </div>
 
         <!-- Step 4 & 5: Status and Results -->
@@ -600,7 +669,7 @@
                     <div id="limeContainer" class="lime-container"></div>
                 </div>
             </div>
-        </div>
+        </div>        
     </div>
 
     <script>
@@ -802,12 +871,32 @@
         function renderAllVisuals(data) {
             const results = data.results;
             const interpretationData = results.interpretation.interpretation_data;
+            // Animate all chart cards after rendering
+            function animateCharts() {
+                document.querySelectorAll('.chart-card').forEach((el, i) => {
+                    el.classList.remove('fade-in-up');
+                    void el.offsetWidth;
+                    setTimeout(() => el.classList.add('fade-in-up'), 120 * i);
+                });
+            }
             renderMetrics(results.training.metrics);
             renderFeatureImportance(interpretationData.feature_importance);
             renderPermutationImportance(interpretationData.permutation_importance);
             renderShapSummary(interpretationData.shap_summary_data);
             renderPdpCharts(interpretationData.partial_dependence_data);
             renderLimeExplanations(interpretationData.lime_explanation_data);
+            document.getElementById('resultsContainer').style.display = 'grid';
+            setTimeout(animateCharts, 100);
+            // Show inference button after all plots are rendered, with animation
+            const infBtn = document.getElementById('btn-inference');
+            infBtn.style.opacity = 0;
+            infBtn.classList.remove('fade-in-up');
+            void infBtn.offsetWidth;
+            document.getElementById('inference-section').style.display = 'block';
+            setTimeout(() => {
+                infBtn.classList.add('fade-in-up');
+                infBtn.style.opacity = 1;
+            }, 400);
         }
 
         function renderMetrics(metrics) {
@@ -930,6 +1019,31 @@
                 document.body.style.transition = 'opacity 0.5s ease-in-out';
                 document.body.style.opacity = '1';
             }, 100);
+        });
+        document.getElementById('btn-inference').addEventListener('click', () => {
+            // Show the fake file display card for inference
+            document.getElementById('inference-file-display-card').style.display = 'block';
+            // Hide table while loading
+            document.getElementById('inference-table-container').style.display = 'none';
+            // Simulate a short delay to mimic file loading
+            setTimeout(() => {
+                fetch('iris_inference.csv')
+                    .then(resp => resp.text())
+                    .then(csv => {
+                        const rows = csv.trim().split('\n').map(r => r.split(','));
+                        const table = document.getElementById('inference-table');
+                        table.innerHTML = '';
+                        table.innerHTML = rows.map((row, i) =>
+                            `<tr>${row.map(cell => `<${i === 0 ? 'th' : 'td'}>${cell}</${i === 0 ? 'th' : 'td'}>`).join('')}</tr>`
+                        ).join('');
+                        // Animate table container
+                        const tblContainer = document.getElementById('inference-table-container');
+                        tblContainer.style.display = 'block';
+                        tblContainer.classList.remove('fade-in-up');
+                        void tblContainer.offsetWidth;
+                        setTimeout(() => tblContainer.classList.add('fade-in-up'), 50);
+                    });
+            }, 700); // 700ms delay for effect
         });
 
     </script>
