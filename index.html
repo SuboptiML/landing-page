@@ -1,659 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuboptiML - Coming Soon</title>
+    <title>SuboptiML - Automated Machine Learning</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0a;
-            color: #ffffff;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
-                linear-gradient(135deg, #0a0a0a 0%, #111827 100%);
-            z-index: -2;
-        }
-
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-image:
-                linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            animation: gridPulse 4s ease-in-out infinite;
-        }
-
-        @keyframes gridPulse {
-
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        header {
-            padding: 2rem 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #22c55e, #10b981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #22c55e;
-            transform: translateY(-2px);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #22c55e, #10b981);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 80vh;
-            text-align: center;
-            padding: 4rem 0;
-        }
-
-        .hero-badge {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 50px;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #22c55e;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .hero-title {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 50%, #22c55e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.03em;
-            animation: titleGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            0% {
-                filter: brightness(1);
-            }
-
-            100% {
-                filter: brightness(1.1);
-            }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 3rem;
-            max-width: 600px;
-            line-height: 1.6;
-        }
-
-        .test-btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #22c55e, #10b981);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .test-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .test-btn:hover::before {
-            left: 100%;
-        }
-
-        .test-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 350px);
-            gap: 2rem;
-            margin-top: 6rem;
-            margin-bottom: 4rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: left;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #22c55e, #10b981);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(34, 197, 94, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #22c55e, #10b981);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            animation: iconPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes iconPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .feature-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .feature-description {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-        }
-
-        footer {
-            text-align: center;
-            padding: 3rem 0;
-            border-top: 1px solid rgba(34, 197, 94, 0.1);
-            margin-top: 4rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-link {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            background: linear-gradient(135deg, #22c55e, #10b981);
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .floating-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
-            animation: floatUp 10s infinite linear;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .email-form {
-                flex-direction: column;
-            }
-
-            .countdown {
-                gap: 1rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .coming-soon-tooltip {
-            position: fixed;
-            pointer-events: none;
-            background: rgba(34, 197, 94, 0.95);
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            white-space: nowrap;
-            box-shadow: 0 4px 24px rgba(34, 197, 94, 0.18);
-            z-index: 9999;
-            opacity: 0;
-            left: 0;
-            top: 0;
-            transform: scale(0.96) translateY(8px);
-            transition: opacity 0.25s, transform 0.25s;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #ffffff; overflow-x: hidden; min-height: 100vh; }
+        .background { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(5, 150, 105, 0.1) 0%, transparent 50%), linear-gradient(135deg, #0a0a0a 0%, #111827 100%); z-index: -2; }
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; animation: gridPulse 4s ease-in-out infinite; }
+        @keyframes gridPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+        header { padding: 2rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #22c55e, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em; }
+        main { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; padding: 4rem 0; }
+        .hero-title { font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 50%, #22c55e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.03em; }
+        .hero-subtitle { font-size: clamp(1.2rem, 3vw, 1.5rem); color: rgba(255, 255, 255, 0.7); margin-bottom: 3rem; max-width: 700px; line-height: 1.6; }
+        .cta-btn { display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, #22c55e, #10b981); color: white; border: none; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3); text-decoration: none; }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 6rem; margin-bottom: 4rem; width: 100%; }
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 20px; padding: 2rem; text-align: left; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-10px); border-color: rgba(34, 197, 94, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1)); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1.5rem; color: #22c55e; }
+        .feature-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: white; }
+        .feature-description { color: rgba(255, 255, 255, 0.7); line-height: 1.6; }
+        footer { text-align: center; padding: 3rem 0; border-top: 1px solid rgba(34, 197, 94, 0.1); margin-top: 4rem; }
     </style>
-    <!-- Google Analytics – conditional loading -->
-    <script>
-        (function () {
-            const consent = localStorage.getItem('ga_consent');
-            if (consent === 'true') {
-                const script1 = document.createElement('script');
-                script1.async = true;
-                script1.src = "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX";
-                document.head.appendChild(script1);
-
-                const script2 = document.createElement('script');
-                script2.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-WFQ3CNP970');
-      `;
-                document.head.appendChild(script2);
-            }
-        })();
-    </script>
-
 </head>
-
-<div id="cookie-banner"
-    style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); backdrop-filter: blur(12px);
-padding: 1.5rem 2rem; border-radius: 1rem; z-index: 9999; display: none; color: #fff; max-width: 90%; text-align: center;">
-    <p style="margin-bottom: 1rem;">We use cookies to analyze traffic with Google Analytics. You can choose to opt in or
-        out.</p>
-    <button id="ga-accept" class="test-btn" style="margin-right: 1rem;">Accept</button>
-    <button id="ga-decline" class="test-btn"
-        style="background: none; border: 1px solid rgba(34, 197, 94, 0.5);">Decline</button>
-</div>
-
 <body>
-
     <div class="background"></div>
     <div class="grid-overlay"></div>
-    <div class="floating-elements"></div>
 
     <div class="container">
         <header>
             <div class="logo">SuboptiML</div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a class="coming-soon">Features</a></li>
-                    <li><a class="coming-soon">About</a></li>
-                    <li><a class="coming-soon">Contact</a></li>
-                </ul>
-            </nav>
         </header>
 
         <main>
-            <div class="hero-badge">🚀 AI-Powered AutoML</div>
-
-            <h1 class="hero-title">SuboptiML</h1>
-
+            <h1 class="hero-title">Go from Data to Model, Faster.</h1>
             <p class="hero-subtitle">
-                Effortless AI engineering. Automated intelligence that empowers you to build, tune, and deploy with zero
-                guesswork — welcome to the age of suboptimal excellence. Coming soon.
+                SuboptiML is a smart assistant that automates the tedious parts of machine learning,
+                like data cleaning and model tuning, so you can focus on results.
             </p>
-            <button class="test-btn coming-soon">Try Demo</button>
+            <a href="demo.html" class="cta-btn">See the Demo in Action</a>
+
             <div class="features-grid" id="features">
                 <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3 class="feature-title">Autopilot Model Building</h3>
-                    <p class="feature-description">
-                        LLM-driven logic decides what you see and when — guiding you from raw data to ready models with
-                        a smart, adaptive interface.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <h3 class="feature-title">Zero-Touch Data Wrangling</h3>
-                    <p class="feature-description">
-                        Auto-cleans, transforms, and encodes your data — no manual preprocessing, no headaches.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🎛️</div>
-                    <h3 class="feature-title">Hyperparameter Alchemy</h3>
-                    <p class="feature-description">
-                        Automatically explores the best parameters using built-in heuristics and LLM feedback.
-                    </p>
-                </div>
-
-                <div class="feature-card">
                     <div class="feature-icon">🚀</div>
-                    <h3 class="feature-title">Train Anything, Anywhere</h3>
+                    <h3 class="feature-title">Automated Workflow</h3>
                     <p class="feature-description">
-                        Fine-tune open models or build from scratch — SuboptiML guides your training.
+                        Upload your data, and SuboptiML takes over. It automatically analyzes your dataset, cleans it, and selects the right models to train, guiding you through the whole process.
                     </p>
                 </div>
 
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">Painless Data Prep</h3>
+                    <p class="feature-description">
+                        Forget manual data prep. SuboptiML handles missing values, encodes categorical features, and scales your data automatically. It just works.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Intelligent Tuning</h3>
+                    <p class="feature-description">
+                        No more guesswork. The system intelligently searches for the best model settings (hyperparameters), saving you hours of manual tuning and delivering better performance.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Understand Your Model</h3>
+                    <p class="feature-description">
+                        Don't just build a model—understand it. Get clear, interactive visualizations that explain which features matter most and how your model makes decisions.
+                    </p>
+                </div>
             </div>
         </main>
 
         <footer>
-            <div class="social-links">
-                <!-- <a class="social-link coming-soon">📧</a>
-                <a class="social-link coming-soon">🐦</a>
-                <a class="social-link coming-soon">💼</a>
-                <a class="social-link coming-soon">🔗</a> -->
-                <a class="social-link coming-soon" target="_blank" aria-label="GitHub">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
-                            d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.566 4.944.36.31.68.923.68 1.861 0 1.343-.012 2.426-.012 2.756 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z" />
-                    </svg>
-                </a>
-            </div>
             <p style="color: rgba(255, 255, 255, 0.5);">
-                2025 SuboptiML. No rights reserved.
+                © 2024 SuboptiML.
             </p>
-            <p style="margin-top: 1rem;">
-                <button onclick="localStorage.removeItem('ga_consent'); location.reload();"
-                    style="background: none; border: none; color: #22c55e; cursor: pointer; text-decoration: underline;">
-                    Change cookie preferences
-                </button>
-            </p>
-
         </footer>
     </div>
-
-    <script>
-        // Floating Elements Animation
-        function createFloatingElements() {
-            const container = document.querySelector('.floating-elements');
-
-            function createCircle() {
-                const circle = document.createElement('div');
-                circle.className = 'floating-circle';
-
-                const size = Math.random() * 60 + 20;
-                const leftPosition = Math.random() * 100;
-                const animationDuration = Math.random() * 10 + 15;
-
-                circle.style.width = size + 'px';
-                circle.style.height = size + 'px';
-                circle.style.left = leftPosition + '%';
-                circle.style.animationDuration = animationDuration + 's';
-
-                container.appendChild(circle);
-
-                setTimeout(() => {
-                    if (circle.parentNode) {
-                        circle.parentNode.removeChild(circle);
-                    }
-                }, animationDuration * 1000);
-            }
-
-            setInterval(createCircle, 3000);
-        }
-
-        // Smooth Scrolling
-        function initSmoothScroll() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        }
-
-
-        // Initialize all functions
-        document.addEventListener('DOMContentLoaded', function () {
-            createFloatingElements();
-            initSmoothScroll();
-
-            // Add loading animation
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 1s ease-in-out';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
-
-        // Feature cards hover effect
-        document.addEventListener('DOMContentLoaded', function () {
-            const cards = document.querySelectorAll('.feature-card');
-
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', function () {
-                    this.style.transform = 'translateY(-10px) scale(1.02)';
-                });
-
-                card.addEventListener('mouseleave', function () {
-                    this.style.transform = 'translateY(0) scale(1)';
-                });
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Create tooltip element
-            const tooltip = document.createElement('div');
-            tooltip.className = 'coming-soon-tooltip';
-            tooltip.textContent = 'Coming soon';
-            document.body.appendChild(tooltip);
-
-            // Show tooltip on hover
-            document.querySelectorAll('.coming-soon').forEach(el => {
-                el.addEventListener('mouseenter', e => {
-                    tooltip.style.opacity = '1';
-                    tooltip.style.transform = 'scale(1) translateY(0)';
-                    tooltip.style.transition = 'opacity 0.25s, transform 0.25s';
-                });
-                el.addEventListener('mousemove', e => {
-                    tooltip.style.left = (e.clientX + 12) + 'px';
-                    tooltip.style.top = (e.clientY + 16) + 'px';
-                });
-                el.addEventListener('mouseleave', e => {
-                    tooltip.style.opacity = '0';
-                    tooltip.style.transform = 'scale(0.96) translateY(8px)';
-                    tooltip.style.transition = 'opacity 0.25s, transform 0.25s';
-                });
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const banner = document.getElementById("cookie-banner");
-            const accepted = localStorage.getItem("ga_consent");
-
-            if (accepted === null) {
-                banner.style.display = "block";
-            }
-
-            document.getElementById("ga-accept").addEventListener("click", () => {
-                localStorage.setItem("ga_consent", "true");
-                location.reload(); // reload to activate GA
-            });
-
-            document.getElementById("ga-decline").addEventListener("click", () => {
-                localStorage.setItem("ga_consent", "false");
-                banner.style.display = "none";
-            });
-        });
-    </script>
-
 </body>
-
 </html>

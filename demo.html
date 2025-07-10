@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SuboptiML - Interactive Demo</title>
+    <!-- Include ApexCharts for modern graphing -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding: 2rem;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #111827 100%);
+            z-index: -2;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image:
+                linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 2rem;
+            left: clamp(1rem, 8vw, 4rem);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #22c55e, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 4rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            max-width: 650px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .demo-controls.hide {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        #file-display-card {
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 14px;
+            background: rgba(34, 197, 94, 0.06);
+            padding: 1rem 1.5rem;
+            width: 100%;
+            text-align: left;
+            display: none; /* Hidden by default */
+        }
+        
+        #columnsSection {
+            text-align: center;
+            width: 100%;
+        }
+
+        #columnsSection h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        #columnsSection .columns-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        #columnsSection button {
+            margin: 0.25rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        #columnsSection button:hover {
+            background: rgba(34, 197, 94, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        #columnsSection button.selected {
+            background: linear-gradient(135deg, #22c55e, #10b981);
+            color: #fff;
+            border-color: #22c55e;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button#btn-main-action {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #22c55e, #10b981);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        button#btn-main-action:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
+        }
+        
+        button#btn-main-action:disabled {
+            background: #222;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+            border: 1px solid #333;
+        }
+        
+        /* Status & Results Styling */
+        .status-and-results {
+            width: 100%;
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .status-and-results.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-container { display: flex; justify-content: center; gap: 2rem; margin-bottom: 3rem; }
+        .step { display: flex; align-items: center; font-size: 1.1rem; color: #888; transition: all 0.4s ease; }
+        .step::before { content: '○'; font-size: 1.2rem; margin-right: 0.5rem; color: #444; transition: all 0.4s ease; }
+        .step.running { color: #22c55e; font-weight: 700; }
+        .step.running::before { content: '⚡'; color: #22c55e; animation: runningPulse 1.5s ease-in-out infinite; }
+        .step.done { color: #10b981; }
+        .step.done::before { content: '✨'; color: #10b981; animation: completePulse 0.6s ease-out; }
+        @keyframes runningPulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(180deg); } }
+        @keyframes completePulse { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+
+        /* Visualization Styles (from visualization.html) */
+        .charts-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+        .chart-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 20px; backdrop-filter: blur(10px); padding: 1.5rem; }
+        .chart-card h2 { font-size: 1.3rem; margin-bottom: 1.5rem; color: #e5e7eb; border-left: 3px solid #22c55e; padding-left: 1rem; }
+        .span-4 { grid-column: span 4; } .span-6 { grid-column: span 6; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
+        @media (max-width: 1200px) { .span-8, .span-6 { grid-column: span 12; } } @media (max-width: 768px) { .span-4 { grid-column: span 12; } }
+        .metrics-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .metric-box { background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 12px; text-align: center; border: 1px solid rgba(34, 197, 94, 0.1); }
+        .metric-value { font-size: 2rem; font-weight: 800; color: #22c55e; }
+        .metric-label { font-size: 0.9rem; color: #9ca3af; margin-top: 0.25rem; text-transform: uppercase; }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(34, 197, 94, 0.2); }
+        .tab-button { padding: 0.5rem 1rem; background: transparent; border: none; border-bottom: 3px solid transparent; color: #9ca3af; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .tab-button.active, .tab-button:hover { color: #22c55e; border-bottom-color: #22c55e; }
+        .tab-content { display: none; } .tab-content.active { display: block; }
+        .pdp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+        .lime-container { display: flex; flex-direction: column; gap: 1.5rem; }
+        .lime-instance { background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.1); }
+        .lime-instance h3 { font-size: 1rem; margin-bottom: 0.5rem; color: #a0aec0; }
+        .lime-explanation { display: flex; justify-content: space-between; font-family: monospace; font-size: 0.9rem; padding: 0.2rem 0; }
+        .lime-explanation .feature { color: #e5e7eb; }
+        .lime-explanation .weight-positive { color: #22c55e; font-weight: bold; }
+        .lime-explanation .weight-negative { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+    <div class="background"></div>
+    <div class="grid-overlay"></div>
+    <div class="logo-container">
+        <a href="index.html" class="logo">SuboptiML</a>
+    </div>
+
+    <div class="main-content">
+        <h1>See How It Works</h1>
+        <p class="hero-subtitle">
+            This is an interactive demo of SuboptiML. Click the button below to simulate uploading the famous Iris dataset, watch the automated analysis run, and explore the results — no setup required.
+        </p>
+
+        <!-- Step 1, 2, 3: Controls -->
+        <div id="demo-controls" class="demo-controls">
+            <!-- Step 1: File Display -->
+            <div id="file-display-card">
+                 <strong style="color:#22c55e; font-size:1.08em;">Loaded Dataset:</strong>
+                 <span style="margin-left: 0.5rem;">iris_dataset.csv</span>
+            </div>
+
+            <!-- Step 2: Column Selection -->
+            <div id="columnsSection" style="display: none;">
+                <h2>Which column should the model predict?</h2>
+                <div class="columns-wrapper"></div>
+            </div>
+
+            <!-- Main Action Button -->
+            <button id="btn-main-action">Load Demo Dataset</button>
+        </div>
+
+        <!-- Step 4 & 5: Status and Results -->
+        <div id="status-and-results" class="status-and-results" style="display: none;">
+            <!-- Status Stepper -->
+            <div class="step-container">
+                <div class="step" id="step-data_prep">Data Prep</div>
+                <div class="step" id="step-training">Model Training</div>
+                <div class="step" id="step-interpretation">Generating Insights</div>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="resultsContainer" class="charts-grid" style="display: none;">
+                 <!-- Metrics Card -->
+                <div class="chart-card span-12">
+                    <h2>Training Metrics</h2>
+                    <div id="metricsContainer" class="metrics-container"></div>
+                </div>
+                <!-- Feature Importance Card -->
+                <div class="chart-card span-8">
+                    <h2>Feature Importance (XGBoost)</h2>
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="switchTab('gain', this)">Gain</button>
+                        <button class="tab-button" onclick="switchTab('weight', this)">Weight</button>
+                        <button class="tab-button" onclick="switchTab('cover', this)">Cover</button>
+                    </div>
+                    <div id="tab-gain" class="tab-content active"><div id="chart-gain"></div></div>
+                    <div id="tab-weight" class="tab-content"><div id="chart-weight"></div></div>
+                    <div id="tab-cover" class="tab-content"><div id="chart-cover"></div></div>
+                </div>
+                <!-- Permutation Importance Card -->
+                <div class="chart-card span-4">
+                    <h2>Permutation Importance</h2>
+                    <div id="chart-permutation"></div>
+                </div>
+                <!-- SHAP Summary Card -->
+                <div class="chart-card span-12">
+                    <h2>SHAP Feature Impact (Global)</h2>
+                    <div id="chart-shap"></div>
+                </div>
+                <!-- PDP Card -->
+                <div class="chart-card span-12">
+                    <h2>Partial Dependence Plots (PDP)</h2>
+                    <div id="pdpContainer" class="pdp-grid"></div>
+                </div>
+                <!-- LIME Card -->
+                <div class="chart-card span-12">
+                    <h2>Local Explanations (LIME)</h2>
+                    <div id="limeContainer" class="lime-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- PRE-LOADED DEMO DATA ---
+        // This simulates the data that would be fetched from the backend.
+        const DEMO_DATA = {
+            analysis_name: "Iris Species Classification",
+            job_id: "demo-job-12345",
+            columns: ["SepalLengthCm", "SepalWidthCm", "PetalLengthCm", "PetalWidthCm", "Species"],
+            results: {
+                training: {
+                    metrics: {
+                        accuracy: 0.978,
+                        precision_weighted: 0.98,
+                        recall_weighted: 0.978,
+                        f1_weighted: 0.978,
+                        auc_roc_ovr_weighted: 0.995
+                    }
+                },
+                interpretation: {
+                    interpretation_data: {
+                        feature_importance: {
+                            gain: [ { feature: "PetalLengthCm", importance: 0.657 }, { feature: "PetalWidthCm", importance: 0.301 }, { feature: "SepalWidthCm", importance: 0.027 }, { feature: "SepalLengthCm", importance: 0.015 } ],
+                            weight: [ { feature: "PetalLengthCm", importance: 25 }, { feature: "PetalWidthCm", importance: 18 }, { feature: "SepalLengthCm", importance: 29 }, { feature: "SepalWidthCm", importance: 21 } ],
+                            cover: [ { feature: "PetalLengthCm", importance: 150.5 }, { feature: "PetalWidthCm", importance: 120.2 }, { feature: "SepalLengthCm", importance: 180.8 }, { feature: "SepalWidthCm", importance: 165.1 } ]
+                        },
+                        permutation_importance: [ { feature: "PetalLengthCm", importance_mean: 0.41 }, { feature: "PetalWidthCm", importance_mean: 0.35 }, { feature: "SepalLengthCm", importance_mean: 0.08 }, { feature: "SepalWidthCm", importance_mean: 0.02 } ],
+                        shap_summary_data: [ { feature: "PetalLengthCm", mean_abs_shap_value: 0.85 }, { feature: "PetalWidthCm", mean_abs_shap_value: 0.72 }, { feature: "SepalLengthCm", mean_abs_shap_value: 0.21 }, { feature: "SepalWidthCm", mean_abs_shap_value: 0.15 } ],
+                        partial_dependence_data: {
+                            "PetalLengthCm": { feature_values: [1.5, 2.5, 3.5, 4.5, 5.5, 6.5], dependence: [-0.8, -0.6, 0.1, 0.7, 0.9, 0.95] },
+                            "PetalWidthCm": { feature_values: [0.2, 0.6, 1.0, 1.4, 1.8, 2.2], dependence: [-0.7, -0.5, 0.0, 0.6, 0.85, 0.92] }
+                        },
+                        lime_explanation_data: {
+                           "1 (Predicted: Setosa)": [ ["PetalLengthCm <= 1.9", 0.45], ["PetalWidthCm <= 0.6", 0.28], ["SepalWidthCm > 3.0", 0.11] ],
+                           "72 (Predicted: Versicolor)": [ ["2.0 < PetalLengthCm <= 4.8", 0.51], ["0.7 < PetalWidthCm <= 1.5", 0.33], ["SepalLengthCm <= 5.8", -0.09] ],
+                           "120 (Predicted: Virginica)": [ ["PetalLengthCm > 4.8", 0.62], ["PetalWidthCm > 1.5", 0.41], ["SepalWidthCm <= 3.0", 0.05] ]
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- DEMO LOGIC ---
+        let demoState = 'initial'; // 'initial' -> 'file_loaded' -> 'target_selected' -> 'running' -> 'complete'
+        let selectedTarget = null;
+
+        const mainButton = document.getElementById('btn-main-action');
+        const fileDisplay = document.getElementById('file-display-card');
+        const columnsSection = document.getElementById('columnsSection');
+        
+        mainButton.addEventListener('click', handleMainAction);
+
+        function updateUI() {
+            switch (demoState) {
+                case 'initial':
+                    mainButton.textContent = 'Load Demo Dataset';
+                    mainButton.disabled = false;
+                    fileDisplay.style.display = 'none';
+                    columnsSection.style.display = 'none';
+                    break;
+                case 'file_loaded':
+                    mainButton.textContent = 'Start Analysis';
+                    mainButton.disabled = true;
+                    fileDisplay.style.display = 'block';
+                    columnsSection.style.display = 'block';
+                    break;
+                case 'target_selected':
+                    mainButton.disabled = false;
+                    break;
+            }
+        }
+        
+        function handleMainAction() {
+            if (demoState === 'initial') {
+                demoState = 'file_loaded';
+                showColumns();
+            } else if (demoState === 'target_selected') {
+                demoState = 'running';
+                startSimulatedAnalysis();
+            }
+            updateUI();
+        }
+
+        function showColumns() {
+            const wrapper = columnsSection.querySelector('.columns-wrapper');
+            wrapper.innerHTML = ''; // Clear previous
+            DEMO_DATA.columns.forEach(header => {
+                const button = document.createElement('button');
+                button.textContent = header;
+                button.onclick = () => {
+                    selectedTarget = header;
+                    wrapper.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+                    demoState = 'target_selected';
+                    updateUI();
+                };
+                wrapper.appendChild(button);
+            });
+        }
+        
+        function startSimulatedAnalysis() {
+            document.getElementById('demo-controls').classList.add('hide');
+            
+            const statusSection = document.getElementById('status-and-results');
+            statusSection.style.display = 'block';
+            setTimeout(() => statusSection.classList.add('show'), 100);
+
+            const steps = [
+                { id: 'step-data_prep', duration: 1500 },
+                { id: 'step-training', duration: 2000 },
+                { id: 'step-interpretation', duration: 1500 }
+            ];
+
+            let delay = 0;
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    document.getElementById(step.id).classList.add('running');
+                }, delay);
+                
+                delay += step.duration;
+
+                setTimeout(() => {
+                    const el = document.getElementById(step.id);
+                    el.classList.remove('running');
+                    el.classList.add('done');
+
+                    if (index === steps.length - 1) {
+                        // Last step finished
+                        renderAllVisuals(DEMO_DATA);
+                        document.getElementById('resultsContainer').style.display = 'grid';
+                    }
+                }, delay);
+            });
+        }
+
+        // --- VISUALIZATION LOGIC (from visualization.html) ---
+
+        function getBaseChartOptions(themeColor = '#22c55e') {
+            return {
+                chart: { type: 'bar', height: 350, toolbar: { show: false }, foreColor: '#a0aec0' },
+                plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '70%', } },
+                dataLabels: { enabled: true, formatter: (val) => val.toFixed(3), style: { fontSize: '12px', colors: ["#fff"] }, background: { enabled: true, foreColor: '#000', opacity: 0.6, padding: 4, borderRadius: 2, } },
+                xaxis: { labels: { style: { colors: '#a0aec0' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { colors: '#e5e7eb', fontSize: '13px' } } },
+                grid: { borderColor: '#ffffff1a', strokeDashArray: 4 },
+                tooltip: { theme: 'dark' },
+                colors: [themeColor]
+            };
+        }
+
+        function renderAllVisuals(data) {
+            const results = data.results;
+            const interpretationData = results.interpretation.interpretation_data;
+            renderMetrics(results.training.metrics);
+            renderFeatureImportance(interpretationData.feature_importance);
+            renderPermutationImportance(interpretationData.permutation_importance);
+            renderShapSummary(interpretationData.shap_summary_data);
+            renderPdpCharts(interpretationData.partial_dependence_data);
+            renderLimeExplanations(interpretationData.lime_explanation_data);
+        }
+
+        function renderMetrics(metrics) {
+            const container = document.getElementById('metricsContainer');
+            container.innerHTML = Object.entries(metrics).map(([key, value]) => `
+                <div class="metric-box">
+                    <div class="metric-value">${typeof value === 'number' ? value.toFixed(3) : value}</div>
+                    <div class="metric-label">${key.replace(/_/g, ' ')}</div>
+                </div>`).join('');
+        }
+
+        function renderFeatureImportance(data) {
+            const renderChart = (type, chartData) => {
+                const options = getBaseChartOptions();
+                options.series = [{ name: type.charAt(0).toUpperCase() + type.slice(1), data: chartData.map(d => d.importance) }];
+                options.xaxis.categories = chartData.map(d => d.feature);
+                options.chart.height = 30 + chartData.length * 40;
+                new ApexCharts(document.querySelector(`#chart-${type}`), options).render();
+            };
+            if(data.gain) renderChart('gain', data.gain);
+            if(data.weight) renderChart('weight', data.weight);
+            if(data.cover) renderChart('cover', data.cover);
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function renderPermutationImportance(data) {
+            const options = getBaseChartOptions('#6366f1');
+            options.series = [{ name: 'Mean Importance', data: data.map(d => d.importance_mean) }];
+            options.xaxis.categories = data.map(d => d.feature);
+            options.chart.height = 30 + data.length * 40;
+            new ApexCharts(document.querySelector('#chart-permutation'), options).render();
+        }
+
+        function renderShapSummary(data) {
+            const options = getBaseChartOptions('#818cf8');
+            options.series = [{ name: 'Mean Absolute SHAP', data: data.map(d => d.mean_abs_shap_value) }];
+            options.xaxis.categories = data.map(d => d.feature);
+            options.chart.height = 30 + data.length * 40;
+            new ApexCharts(document.querySelector('#chart-shap'), options).render();
+        }
+
+        function renderPdpCharts(data) {
+            const container = document.getElementById('pdpContainer');
+            container.innerHTML = '';
+            Object.entries(data).forEach(([feature, pdpData]) => {
+                const chartDiv = document.createElement('div');
+                container.appendChild(chartDiv);
+                const options = {
+                    series: [{ name: 'Dependence', data: pdpData.dependence }],
+                    chart: { height: 300, type: 'line', zoom: { enabled: false }, toolbar: { show: false }, foreColor: '#a0aec0' },
+                    colors: ['#10b981'], stroke: { curve: 'smooth', width: 3 },
+                    title: { text: feature, align: 'left', style: { color: '#e5e7eb', fontSize: '16px' } },
+                    xaxis: { categories: pdpData.feature_values.map(v => typeof v === 'number' ? v.toFixed(2) : v), labels: { style: { colors: '#a0aec0' } } },
+                    yaxis: { title: { text: 'Prediction Impact', style: { color: '#a0aec0' }}, labels: { style: { colors: '#a0aec0' }} },
+                    grid: { borderColor: '#ffffff1a', strokeDashArray: 4 }, tooltip: { theme: 'dark' }
+                };
+                new ApexCharts(chartDiv, options).render();
+            });
+        }
+
+        function renderLimeExplanations(data) {
+            const container = document.getElementById('limeContainer');
+            container.innerHTML = Object.entries(data).map(([instanceId, explanations]) => `
+                <div class="lime-instance">
+                    <h3>Explanation for Sample #${instanceId}</h3>
+                    ${explanations.map(exp => {
+                        const [feature, weight] = exp;
+                        const weightClass = weight > 0 ? 'weight-positive' : 'weight-negative';
+                        return `<div class="lime-explanation">
+                                    <span class="feature">${feature}</span>
+                                    <span class="${weightClass}">${weight > 0 ? '+' : ''}${weight.toFixed(2)}</span>
+                                </div>`;
+                    }).join('')}
+                </div>`).join('');
+        }
+
+        // Initial setup
+        updateUI();
+
+    </script>
+</body>
+</html>
